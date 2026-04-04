@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUDOKU AUTOMATION SOLVER v4.0</title>
+    <meta name="description"
+        content="Cyberpunk-themed Sudoku puzzle solver with manual and automated image recognition modes.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-rain"></canvas>
+
+    <!-- Scanline Overlay -->
+    <div class="scanline-overlay"></div>
+
+    <!-- CRT Vignette -->
+    <div class="crt-vignette"></div>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header id="app-header">
+            <div class="header-left">
+                <span class="logo-bracket">[</span>
+                <h1>SUDOKU<span class="accent">/</span><span class="accent">/</span> CYBER_GRID</h1>
+                <span class="logo-bracket">]</span>
+            </div>
+            <div class="header-right">
+                <span class="version-tag">v4.0</span>
+                <span class="status-dot"></span>
+                <span class="status-text">SYSTEM ONLINE</span>
+            </div>
+        </header>
+
+        <!-- Status Bar -->
+        <div id="status-bar">
+            <div class="status-segment">
+                <span class="status-label">MODE:</span>
+                <span id="mode-indicator" class="status-value">MANUAL_INPUT</span>
+            </div>
+            <div class="status-segment">
+                <span class="status-label">CELLS:</span>
+                <span id="cell-count" class="status-value">0/81</span>
+            </div>
+            <div class="status-segment">
+                <span class="status-label">STATUS:</span>
+                <span id="grid-status" class="status-value">AWAITING_INPUT</span>
+            </div>
+            <div class="status-segment mode-toggle-segment">
+                <label class="toggle-switch" for="mode-toggle">
+                    <input type="checkbox" id="mode-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label">AUTOMATION</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <!-- Manual Input Panel -->
+            <section id="manual-panel" class="panel active-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">▸</span>
+                    <span class="panel-title">GRID_INTERFACE</span>
+                    <span class="panel-line"></span>
+                </div>
+
+                <form id="sudoku-form">
+                    <div id="sudoku-grid-container">
+                        <table id="sudoku-board" aria-label="Sudoku puzzle grid"></table>
+                    </div>
+
+                    <div class="controls-row">
+                        <button type="button" id="clear-btn" class="ctrl-btn">
+                            <span class="btn-icon">⟲</span> CLEAR
+                        </button>
+                        <button type="submit" id="solve-btn" class="ctrl-btn primary">
+                            <span class="btn-icon">⚡</span> EXECUTE_SOLVE
+                        </button>
+                    </div>
+                </form>
+
+                <div id="result" class="result-display"></div>
+                <div id="exec-time" class="exec-time-display"></div>
+            </section>
+
+            <!-- Automation Panel -->
+            <section id="automation-panel" class="panel">
+                <div class="panel-header">
+                    <span class="panel-icon">▸</span>
+                    <span class="panel-title">IMAGE_PROCESSOR</span>
+                    <span class="panel-line"></span>
+                </div>
+
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">⬆</div>
+                    <p class="upload-text">DROP IMAGE OR CLICK TO SELECT</p>
+                    <p class="upload-subtext">Supported: PNG, JPG, WEBP</p>
+                    <input type="file" id="image-input" accept="image/*">
+                </div>
+
+                <div id="image-preview-container">
+                    <div id="image-preview"></div>
+                </div>
+
+                <button id="upload-btn" class="ctrl-btn primary">
+                    <span class="btn-icon">⚡</span> UPLOAD &amp; SOLVE
+                </button>
+
+                <div id="boards-output">
+                    <div id="extracted-board-container" class="board-result-container" style="display:none;">
+                        <div class="board-result-header">
+                            <span class="panel-icon">▸</span> EXTRACTED_BOARD
+                        </div>
+                        <table id="extracted-board" aria-label="Extracted Sudoku board"></table>
+                    </div>
+                    <div id="solved-board-container" class="board-result-container" style="display:none;">
+                        <div class="board-result-header">
+                            <span class="panel-icon">▸</span> SOLVED_BOARD
+                        </div>
+                        <table id="solved-board" aria-label="Solved Sudoku board"></table>
+                    </div>
+                </div>
+
+                <div id="image-result" class="result-display"></div>
+                <div id="image-exec-time" class="exec-time-display"></div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer id="app-footer">
+            <span class="footer-text">SUDOKU_CYBER_GRID // SECURE_SYSTEM // 2026</span>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

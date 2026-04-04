@@ -1,0 +1,192 @@
+# ===========================
+# Python Environment
+# ===========================
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===========================
+# Node & Frontend
+# ===========================
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+package-lock.json
+yarn.lock
+
+# ===========================
+# IDE & Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+.DS_Store
+Thumbs.db
+*.iml
+out/
+
+# ===========================
+# Environment Files
+# ===========================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===========================
+# OS
+# ===========================
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ===========================
+# Project Specific
+# ===========================
+# Large model files (optional - use Git LFS if needed)
+*.joblib
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.weights
+*.pth
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Cache
+.cache/
+__pycache__/
+*.cache
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded files
+uploads/
+temp_uploads/
+
+# System files
+.AppleDouble
+.LSOverride
+._*
+
+# ===========================
+# Development Tools
+# ===========================
+# Pre-commit hooks
+.pre-commit-config.yaml
+
+# Local machine configurations
+config.local.py
+settings.local.json
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+
+# ===========================
+# Documentation
+# ===========================
+# Sphinx
+docs/_build/
+site/
+
+# ===========================
+# Misc
+# ===========================
+*.tar.gz
+*.zip
+.git/
+.github/
