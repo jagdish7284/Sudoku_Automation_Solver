@@ -1,1 +1,1 @@
-# Backend app package
+"""Sudoku Automation Solver - Backend Application Package"""

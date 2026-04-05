@@ -1,1 +1,1 @@
-# Routes package
+"""Routes module - API endpoints"""

@@ -1,1 +1,1 @@
-# Utils package
+"""Utils module - Common utilities and validators"""
