@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 DIGIT_SIZE   = 28     # MNIST native resolution
 MIN_CONF     = 0.50   # Below this → treat cell as empty
 UNCERTAIN    = 0.75   # Between MIN_CONF and UNCERTAIN → confidence flag
-MODEL_DIR    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models")
+MODEL_DIR    = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models")
 MODEL_PATH   = os.path.join(MODEL_DIR, "sudoku_digit_mlp.joblib")
 MODEL_VERSION = "v5_fast_mnist"  # bump to force retrain
 

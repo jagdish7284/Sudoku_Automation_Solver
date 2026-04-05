@@ -42,10 +42,10 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from sudoku_solver import solve_board
-from image_processing import find_sudoku_grid, extract_cells
-from digit_recognition import recognize_board
-from board_validator import validate_board, format_violations, log_violations
+from app.services.sudoku_solver import solve_board
+from app.services.image_processor import find_sudoku_grid, extract_cells
+from app.services.digit_recognizer import recognize_board
+from app.utils.validators import validate_board, format_violations, log_violations
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
 logging.basicConfig(
