@@ -32,6 +32,10 @@ FEATURES:
 import os
 import logging
 import time
+import socket
+import signal
+import subprocess
+import sys
 from typing import List, Optional
 
 import cv2
@@ -361,16 +365,149 @@ async def health():
     return {"status": "ok", "version": "4.0"}
 
 
+# ─── Port Management & Server Startup ─────────────────────────────────────────
+
+def is_port_available(port: int, host: str = "0.0.0.0") -> bool:
+    """
+    Check if a port is available on the specified host.
+
+    Args:
+        port: Port number to check
+        host: Host address (default 0.0.0.0)
+
+    Returns:
+        True if port is available, False if in use
+    """
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            # Set SO_REUSEADDR to avoid "Address already in use" immediately
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # Try to bind to the port
+            sock.bind((host, port))
+            sock.close()
+            return True
+    except (OSError, socket.error):
+        return False
+
+
+def find_available_port(start_port: int = 8000, max_attempts: int = 10) -> int:
+    """
+    Find the next available port starting from start_port.
+
+    Args:
+        start_port: Starting port number (default 8000)
+        max_attempts: Maximum number of ports to try (default 10)
+
+    Returns:
+        Available port number
+    """
+    for offset in range(max_attempts):
+        port = start_port + offset
+        if is_port_available(port):
+            return port
+
+    logger.error(f"Could not find available port in range {start_port}-{start_port + max_attempts - 1}")
+    raise RuntimeError("No available ports found")
+
+
+def kill_process_on_port(port: int) -> bool:
+    """
+    Kill process using the specified port (Windows only).
+
+    Args:
+        port: Port number
+
+    Returns:
+        True if process was killed, False otherwise
+    """
+    try:
+        if sys.platform == "win32":
+            # Windows: Use netstat and taskkill
+            result = subprocess.run(
+                f'netstat -ano | findstr :{port}',
+                shell=True,
+                capture_output=True,
+                text=True
+            )
+            if result.stdout:
+                # Extract PID from netstat output
+                parts = result.stdout.strip().split()
+                if len(parts) > 0:
+                    pid = parts[-1]
+                    try:
+                        subprocess.run(f'taskkill /PID {pid} /F', shell=True, check=True)
+                        logger.info(f"  ✓ Killed process {pid} using port {port}")
+                        return True
+                    except subprocess.CalledProcessError:
+                        return False
+        else:
+            # Unix/Linux: Use lsof and kill
+            result = subprocess.run(
+                f'lsof -i :{port}',
+                shell=True,
+                capture_output=True,
+                text=True
+            )
+            if result.stdout:
+                lines = result.stdout.strip().split('\n')[1:]  # Skip header
+                for line in lines:
+                    parts = line.split()
+                    if len(parts) > 1:
+                        pid = parts[1]
+                        try:
+                            subprocess.run(['kill', '-9', pid], check=True)
+                            logger.info(f"  ✓ Killed process {pid} using port {port}")
+                            return True
+                        except subprocess.CalledProcessError:
+                            pass
+    except Exception as e:
+        logger.warning(f"  ⚠ Could not kill process on port {port}: {e}")
+
+    return False
+
+
+def setup_signal_handlers():
+    """Setup proper signal handlers for graceful shutdown."""
+    def signal_handler(signum, frame):
+        logger.info("\n⏸ Shutdown signal received, closing server gracefully...")
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    if hasattr(signal, 'SIGTERM'):
+        signal.signal(signal.SIGTERM, signal_handler)
+
+
 if __name__ == "__main__":
     import uvicorn
 
+    # Setup signal handlers for graceful shutdown
+    setup_signal_handlers()
+
     logger.info("🚀 Starting Sudoku Automation API v4.0")
     logger.info(f"Frontend directory: {FRONTEND_DIR}")
-    logger.info("Listening on http://0.0.0.0:8000")
+
+    # Detect available port
+    preferred_port = 8000
+    if not is_port_available(preferred_port):
+        logger.warning(f"⚠ Port {preferred_port} is in use (WinError 10048)")
+        logger.info(f"  Attempting to kill existing process...")
+        if kill_process_on_port(preferred_port):
+            import time
+            time.sleep(1)  # Wait for port to be released
+
+        if not is_port_available(preferred_port):
+            logger.info(f"  Finding next available port...")
+            preferred_port = find_available_port(start_port=8000)
+            logger.info(f"  ✓ Using fallback port {preferred_port}")
+    else:
+        logger.info(f"  ✓ Port {preferred_port} is available")
+
+    logger.info(f"🌐 Listening on http://0.0.0.0:{preferred_port}")
+    logger.info("=" * 70)
 
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000,
+        port=preferred_port,
         log_level="info"
     )
