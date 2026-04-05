@@ -9,7 +9,6 @@
  *   • Matrix rain animated background
  *   • Digit pop & glitch animations
  *   • Optional key-press audio feedback
- *   • Mode toggle (Manual ↔ Automation)
  *   • Cascade reveal animation on solve
  * ──────────────────────────────────────────────────────────────────────────────
  */
@@ -22,18 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultDiv        = document.getElementById('result');
     const execTimeDiv      = document.getElementById('exec-time');
     const clearBtn         = document.getElementById('clear-btn');
-    const modeToggle       = document.getElementById('mode-toggle');
-    const manualPanel      = document.getElementById('manual-panel');
-    const automationPanel  = document.getElementById('automation-panel');
-    const modeIndicator    = document.getElementById('mode-indicator');
     const cellCountDisplay = document.getElementById('cell-count');
     const gridStatus       = document.getElementById('grid-status');
-    const imageInput       = document.getElementById('image-input');
-    const uploadBtn        = document.getElementById('upload-btn');
-    const uploadZone       = document.getElementById('upload-zone');
-    const imagePreview     = document.getElementById('image-preview');
-    const imageResult      = document.getElementById('image-result');
-    const imageExecTime    = document.getElementById('image-exec-time');
 
     let activeCell = null;   // Currently focused cell { row, col, td, input }
 
@@ -470,122 +459,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateCellCount();
     });
-
-    // ── Mode Toggle ─────────────────────────────────────────────────────────
-    modeToggle.addEventListener('change', () => {
-        const isAutomation = modeToggle.checked;
-
-        if (isAutomation) {
-            manualPanel.classList.remove('active-panel');
-            automationPanel.classList.add('active-panel');
-            modeIndicator.textContent = 'AUTOMATION';
-        } else {
-            automationPanel.classList.remove('active-panel');
-            manualPanel.classList.add('active-panel');
-            modeIndicator.textContent = 'MANUAL_INPUT';
-        }
-    });
-
-    // ── Upload Zone Drag & Drop ─────────────────────────────────────────────
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('drag-over');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('drag-over');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('drag-over');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            imageInput.files = files;
-            showImagePreview(files[0]);
-        }
-    });
-
-    imageInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) showImagePreview(file);
-    });
-
-    function showImagePreview(file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            imagePreview.innerHTML = `<img src="${event.target.result}" alt="Uploaded Sudoku image preview">`;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // ── Upload & Solve (Image) ──────────────────────────────────────────────
-    uploadBtn.addEventListener('click', async () => {
-        const file = imageInput.files[0];
-        if (!file) {
-            imageResult.textContent = 'ERROR: NO_IMAGE_SELECTED';
-            imageResult.className = 'result-display error';
-            return;
-        }
-
-        imageResult.innerHTML = '<span class="loading-spinner"></span>PROCESSING...';
-        imageResult.className = 'result-display processing';
-        imageExecTime.textContent = '';
-
-        const start = performance.now();
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-            const response = await fetch('/solve-image', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            const end = performance.now();
-
-            if (data.error) {
-                imageResult.textContent = `ERROR: ${data.error}`;
-                imageResult.className = 'result-display error';
-                playErrorSound();
-            } else {
-                displayResultBoard(data.extracted_board, 'extracted-board', 'extracted-board-container');
-                displayResultBoard(data.solved_board, 'solved-board', 'solved-board-container');
-                imageResult.textContent = '✓ SOLUTION_FOUND';
-                imageResult.className = 'result-display success';
-                playSolveSound();
-            }
-
-            imageExecTime.textContent = `exec_time: ${(end - start).toFixed(2)}ms`;
-        } catch (err) {
-            imageResult.textContent = 'ERROR: CONNECTION_FAILED';
-            imageResult.className = 'result-display error';
-            playErrorSound();
-        }
-    });
-
-    function displayResultBoard(board, tableId, containerId) {
-        if (!board) return;
-        const table = document.getElementById(tableId);
-        const container = document.getElementById(containerId);
-        table.innerHTML = '';
-
-        for (let i = 0; i < 9; i++) {
-            const tr = document.createElement('tr');
-            for (let j = 0; j < 9; j++) {
-                const td = document.createElement('td');
-                td.textContent = board[i][j] || '';
-
-                if (j === 2 || j === 5) td.classList.add('border-right');
-                if (i === 2 || i === 5) td.classList.add('border-bottom');
-
-                tr.appendChild(td);
-            }
-            table.appendChild(tr);
-        }
-
-        container.style.display = 'block';
-    }
 
     // ── Initial state ───────────────────────────────────────────────────────
     updateCellCount();
