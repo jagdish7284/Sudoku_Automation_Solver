@@ -1,3 +1,7 @@
+# Build Tools (must be first — fixes 'Cannot import setuptools.build_meta')
+setuptools>=68.0
+wheel>=0.41.0
+
 # Core Web Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
