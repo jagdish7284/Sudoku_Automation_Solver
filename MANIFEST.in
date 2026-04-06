@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include requirements.txt
+include .python-version
+include runtime.txt
+recursive-include backend *.py
+recursive-include backend/app/services/models *.joblib
+recursive-include frontend *.html *.js *.css
+recursive-include docs *.md

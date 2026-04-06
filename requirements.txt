@@ -1,5 +1,4 @@
 # Build Tools (must be first — fixes 'Cannot import setuptools.build_meta')
-pip>=23.0
 setuptools>=68.0.0
 wheel>=0.41.0
 
