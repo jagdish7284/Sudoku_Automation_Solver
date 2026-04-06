@@ -46,10 +46,19 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app.services.sudoku_solver import solve_board
-from app.services.image_processor import find_sudoku_grid, extract_cells
-from app.services.digit_recognizer import recognize_board
-from app.utils.validators import validate_board, format_violations, log_violations
+# Handle both absolute and relative imports for compatibility
+try:
+    # Try relative imports first (works with gunicorn: backend.main:app)
+    from .app.services.sudoku_solver import solve_board
+    from .app.services.image_processor import find_sudoku_grid, extract_cells
+    from .app.services.digit_recognizer import recognize_board
+    from .app.utils.validators import validate_board, format_violations, log_violations
+except ImportError:
+    # Fall back to absolute imports (works when running script directly)
+    from app.services.sudoku_solver import solve_board
+    from app.services.image_processor import find_sudoku_grid, extract_cells
+    from app.services.digit_recognizer import recognize_board
+    from app.utils.validators import validate_board, format_violations, log_violations
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
 logging.basicConfig(

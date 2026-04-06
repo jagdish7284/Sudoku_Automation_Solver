@@ -1,7 +1,6 @@
 [build-system]
 requires = ["setuptools>=71.0", "wheel>=0.41.0"]
 build-backend = "setuptools.build_meta"
-backend-path = ["."]
 
 [project]
 name = "sudoku-automation-solver"

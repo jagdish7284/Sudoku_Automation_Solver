@@ -24,7 +24,7 @@ setup(
     license="MIT",
     packages=find_packages(),
     package_data={
-        "app": ["services/models/sudoku_digit_mlp.joblib"],
+        "backend": ["app/services/models/sudoku_digit_mlp.joblib"],
     },
     python_requires=">=3.11,<3.12",
     install_requires=[
@@ -39,11 +39,6 @@ setup(
         "joblib==1.3.2",
         "gunicorn==21.2.0",
     ],
-    entry_points={
-        "console_scripts": [
-            "sudoku-solver=backend.main:app",
-        ],
-    },
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
